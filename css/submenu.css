@@ -87,7 +87,7 @@
     position: absolute;
     top: 0;
     right: calc(100% - 4px);
-    width: 100cqw;
+    width: 200cqw;
     height: 100%;
     background-color: var(--color-coral);
     box-shadow: 0px 4px 0px var(--color-black);

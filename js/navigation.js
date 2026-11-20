@@ -36,6 +36,44 @@ let touchStartX = 0;
 let touchStartY = 0;
 let touchMoved = false;
 let suppressNextTouchClick = false;
+let touchAutoScrollTimer = null;
+let touchAutoScrollDir = 0;
+
+/**
+ * @brief Detiene o inicia el auto-scroll en los bordes de la lista al arrastrar el dedo.
+ * @param {number} dir -1 (subir), 1 (bajar), 0 (detener).
+ */
+function setTouchAutoScroll(dir) {
+    if (touchAutoScrollDir === dir) return;
+    touchAutoScrollDir = dir;
+
+    if (touchAutoScrollTimer) {
+        clearInterval(touchAutoScrollTimer);
+        touchAutoScrollTimer = null;
+    }
+
+    if (dir === 0) return;
+
+    touchAutoScrollTimer = setInterval(() => {
+        if (currentView !== 'submenu') {
+            setTouchAutoScroll(0);
+            return;
+        }
+        const items = getCurrentSubmenuItems();
+        if (items.length === 0) return;
+
+        const nextIndex = subIndex + dir;
+        if (nextIndex < 0 || nextIndex >= items.length) {
+            setTouchAutoScroll(0);
+            return;
+        }
+
+        subIndex = nextIndex;
+        adjustWindow('keyboard');
+        applyWindowScroll();
+        renderSubmenuSelection(items);
+    }, 140);
+}
 
 /**
  * @brief Simula el comportamiento de hover del ratón bajo la posición del dedo.
@@ -43,9 +81,9 @@ let suppressNextTouchClick = false;
  */
 function handleTouchHoverAtPoint(touch) {
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!el) return;
 
     if (currentView === 'menu') {
+        if (!el) return;
         const btn = el.closest('.nav-btn');
         if (btn) {
             const idx = Array.from(navButtons).indexOf(btn);
@@ -58,15 +96,33 @@ function handleTouchHoverAtPoint(touch) {
     }
 
     if (currentView === 'submenu') {
-        const item = el.closest('.submenu-item');
-        if (item) {
-            const items = Array.from(getCurrentSubmenuItems());
-            const idx = items.indexOf(item);
-            if (idx !== -1 && idx !== subIndex) {
-                subIndex = idx;
-                adjustWindow('mouse');
-                applyWindowScroll();
-                renderSubmenuSelection(items);
+        if (el) {
+            const item = el.closest('.submenu-item');
+            if (item) {
+                const items = Array.from(getCurrentSubmenuItems());
+                const idx = items.indexOf(item);
+                if (idx !== -1 && idx !== subIndex) {
+                    subIndex = idx;
+                    adjustWindow('keyboard');
+                    applyWindowScroll();
+                    renderSubmenuSelection(items);
+                }
+            }
+        }
+
+        // Auto-scroll si el dedo está en el borde superior/inferior de la lista
+        const listContainer = document.querySelector('.submenu-list-container');
+        if (listContainer) {
+            const rect = listContainer.getBoundingClientRect();
+            const edgeZone = rect.height * 0.14;
+            const inListHorizontally = touch.clientX >= rect.left - 30 && touch.clientX <= rect.right + 30;
+
+            if (inListHorizontally && touch.clientY <= rect.top + edgeZone) {
+                setTouchAutoScroll(-1);
+            } else if (inListHorizontally && touch.clientY >= rect.bottom - edgeZone) {
+                setTouchAutoScroll(1);
+            } else {
+                setTouchAutoScroll(0);
             }
         }
     }
@@ -98,10 +154,16 @@ document.addEventListener('touchmove', (e) => {
 }, { passive: true });
 
 document.addEventListener('touchend', () => {
+    setTouchAutoScroll(0);
     if (touchMoved) {
         suppressNextTouchClick = true;
         setTimeout(() => { suppressNextTouchClick = false; }, 300);
     }
+    touchMoved = false;
+}, { passive: true });
+
+document.addEventListener('touchcancel', () => {
+    setTouchAutoScroll(0);
     touchMoved = false;
 }, { passive: true });
 
@@ -163,6 +225,7 @@ function openSubmenu() {
     // if(particlesContainer) particlesContainer.classList.add('slide-left-out');
 
     document.getElementById('main-layout').style.backgroundColor = '#188A78';
+    document.body.style.backgroundColor = '#188A78';
 
     submenuContainer.classList.remove('hidden');
     submenuContainer.classList.remove('hidden-view');
@@ -210,6 +273,7 @@ function closeSubmenu() {
     // if(particlesContainer) particlesContainer.classList.remove('slide-left-out');
 
     document.getElementById('main-layout').style.backgroundColor = 'var(--color-turquoise)';
+    document.body.style.backgroundColor = 'var(--color-turquoise)';
 
     mainMenuContainer.classList.remove('hidden-view');
     mainMenuContainer.classList.add('active');

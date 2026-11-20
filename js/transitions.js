@@ -11,6 +11,7 @@ const gridOverlay = document.getElementById('grid-overlay');
 const backToIntroBtn = document.getElementById('back-to-intro-btn');
 const navButtons = document.querySelectorAll('.nav-btn');
 const gameContainer = document.getElementById('game-container');
+const fullscreenRetryBtn = document.getElementById('fullscreen-retry-btn');
 
 const BASE_WIDTH = 1280;
 const BASE_HEIGHT = 720;
@@ -65,13 +66,73 @@ async function enterLandscapeFullscreen() {
     } catch (err) {
         // Si no se puede bloquear por software, #rotate-overlay pedirá girar el dispositivo
     }
+
+    syncFullscreenPromptState();
 }
+
+/**
+ * @brief Comprueba si el navegador soporta Fullscreen API en documentos.
+ */
+function canUseFullscreen() {
+    const root = document.documentElement;
+    return Boolean(
+        (root.requestFullscreen || root.webkitRequestFullscreen) &&
+        document.fullscreenEnabled !== false
+    );
+}
+
+/**
+ * @brief Sincroniza la clase `needs-fullscreen` si el usuario salió de pantalla completa en móvil.
+ */
+function syncFullscreenPromptState() {
+    const isFullscreen = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+    const needsFullscreen =
+        document.body.classList.contains('game-started') &&
+        TOUCH_DEVICE_MQ.matches &&
+        canUseFullscreen() &&
+        !isFullscreen;
+
+    document.body.classList.toggle('needs-fullscreen', needsFullscreen);
+}
+
+if (fullscreenRetryBtn) {
+    fullscreenRetryBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        enterLandscapeFullscreen();
+    });
+}
+
+// Si salió de pantalla completa (p. ej. al salir del navegador), re-enganchar en el primer toque
+document.addEventListener('touchend', () => {
+    if (document.body.classList.contains('needs-fullscreen') && !PORTRAIT_TOUCH_MQ.matches) {
+        enterLandscapeFullscreen();
+    }
+}, { passive: true });
 
 window.addEventListener('resize', updateViewportScale);
 window.addEventListener('orientationchange', () => {
-    setTimeout(updateViewportScale, 100);
+    setTimeout(() => {
+        updateViewportScale();
+        syncFullscreenPromptState();
+    }, 100);
 });
-document.addEventListener('fullscreenchange', updateViewportScale);
+document.addEventListener('fullscreenchange', () => {
+    updateViewportScale();
+    syncFullscreenPromptState();
+});
+document.addEventListener('webkitfullscreenchange', () => {
+    updateViewportScale();
+    syncFullscreenPromptState();
+});
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        setTimeout(() => {
+            updateViewportScale();
+            syncFullscreenPromptState();
+        }, 100);
+    }
+});
+window.addEventListener('focus', syncFullscreenPromptState);
 updateViewportScale();
 
 if (startBtn) {
@@ -138,6 +199,7 @@ function startTransition() {
     // FASE 5: Solidificar fondo del menú (empieza a transicionar a turquesa)
     setTimeout(() => {
         mainLayout.style.backgroundColor = 'var(--color-turquoise)';
+        document.body.style.backgroundColor = 'var(--color-turquoise)';
         
         // Esperar a que acabe la transición (0.6s) para quitar el grid y que no se vea el azul de fondo
         setTimeout(() => {
@@ -171,6 +233,7 @@ function returnToIntro() {
         pendingOrientationHandler = null;
     }
     document.body.classList.remove('game-started');
+    syncFullscreenPromptState();
 
     if (screen.orientation && screen.orientation.unlock) {
         try { screen.orientation.unlock(); } catch (err) {}
@@ -181,6 +244,7 @@ function returnToIntro() {
     updateViewportScale();
 
     mainLayout.style.backgroundColor = 'transparent';
+    document.body.style.backgroundColor = 'var(--color-dark)';
     mainLayout.classList.remove('slide-in');
     mainLayout.classList.add('hidden');
     

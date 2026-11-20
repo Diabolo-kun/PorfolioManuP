@@ -23,6 +23,7 @@
             position: absolute; top: 20px; right: 20px; z-index: 1000; 
             font-family: var(--font-heading); font-weight: 700; color: white;
             text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+            display: flex; align-items: center;
         }
         .lang-btn {
             background: none; border: none; color: inherit; cursor: pointer; 
@@ -30,6 +31,17 @@
         }
         .lang-btn.active { opacity: 1; color: var(--color-yellow); }
         .lang-btn:hover { opacity: 0.8; }
+        #fullscreen-retry-btn {
+            display: none; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.35);
+            color: white; cursor: pointer; font-size: 1.1rem; line-height: 1;
+            width: 30px; height: 30px; margin-left: 12px; border-radius: 4px;
+            opacity: 0.75; transition: all 0.25s ease;
+        }
+        #fullscreen-retry-btn:hover { opacity: 1; border-color: var(--color-yellow); color: var(--color-yellow); }
+        body.game-started.needs-fullscreen #fullscreen-retry-btn {
+            display: inline-flex;
+        }
     </style>
 </head>
 <body>
@@ -40,6 +52,7 @@
         <button class="lang-btn active" data-lang="es">ES</button>
         <span style="opacity: 0.5; margin: 0 5px;">|</span>
         <button class="lang-btn" data-lang="en">EN</button>
+        <button id="fullscreen-retry-btn" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
     </div>
 
     <!-- FASE DE INTRO -->

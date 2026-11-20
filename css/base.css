@@ -12,12 +12,13 @@
 
 html, body {
     font-family: var(--font-body);
-    background-color: #000;
+    background-color: var(--color-dark);
     color: var(--color-light);
     width: 100vw;
     height: 100dvh;
     overflow: hidden; 
     touch-action: none; 
+    transition: background-color 0.6s ease;
 }
 
 /* Lienzo 16:9 escalado proporcionalmente */
@@ -29,9 +30,9 @@ html, body {
     height: 720px;
     transform: translate(-50%, -50%);
     transform-origin: center center;
-    overflow: hidden;
+    overflow: visible;
     container-type: size;
-    background-color: var(--color-dark);
+    background-color: transparent;
 }
 
 /* En móvil vertical, la pantalla de START ocupa el viewport vertical antes de pulsar START */
