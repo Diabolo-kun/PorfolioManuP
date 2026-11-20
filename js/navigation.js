@@ -26,8 +26,84 @@ function updateMainMenuVisuals() {
         }
     });
 
-    document.body.className = `nav-active-${mainIndex}`;
+    document.body.classList.forEach(cls => {
+        if (cls.startsWith('nav-active-')) document.body.classList.remove(cls);
+    });
+    document.body.classList.add(`nav-active-${mainIndex}`);
 }
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchMoved = false;
+let suppressNextTouchClick = false;
+
+/**
+ * @brief Simula el comportamiento de hover del ratón bajo la posición del dedo.
+ * @param {Touch} touch Objeto Touch actual.
+ */
+function handleTouchHoverAtPoint(touch) {
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!el) return;
+
+    if (currentView === 'menu') {
+        const btn = el.closest('.nav-btn');
+        if (btn) {
+            const idx = Array.from(navButtons).indexOf(btn);
+            if (idx !== -1 && idx !== mainIndex) {
+                mainIndex = idx;
+                updateMainMenuVisuals();
+            }
+        }
+        return;
+    }
+
+    if (currentView === 'submenu') {
+        const item = el.closest('.submenu-item');
+        if (item) {
+            const items = Array.from(getCurrentSubmenuItems());
+            const idx = items.indexOf(item);
+            if (idx !== -1 && idx !== subIndex) {
+                subIndex = idx;
+                adjustWindow('mouse');
+                applyWindowScroll();
+                renderSubmenuSelection(items);
+            }
+        }
+    }
+}
+
+document.addEventListener('touchstart', (e) => {
+    if (currentView !== 'menu' && currentView !== 'submenu') return;
+    if (e.touches.length !== 1) return;
+
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchMoved = false;
+    suppressNextTouchClick = false;
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+    if (currentView !== 'menu' && currentView !== 'submenu') return;
+    if (e.touches.length !== 1) return;
+
+    const touch = e.touches[0];
+    const dx = Math.abs(touch.clientX - touchStartX);
+    const dy = Math.abs(touch.clientY - touchStartY);
+    if (dx > 8 || dy > 8) {
+        touchMoved = true;
+    }
+
+    handleTouchHoverAtPoint(touch);
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+    if (touchMoved) {
+        suppressNextTouchClick = true;
+        setTimeout(() => { suppressNextTouchClick = false; }, 300);
+    }
+    touchMoved = false;
+}, { passive: true });
 
 navButtons.forEach((btn, index) => {
     btn.addEventListener('mouseenter', () => {
@@ -38,6 +114,7 @@ navButtons.forEach((btn, index) => {
     });
 
     btn.addEventListener('click', () => {
+        if (suppressNextTouchClick) return;
         if (currentView === 'menu') {
             mainIndex = index;
             if (btn.classList.contains('direct-action')) {
@@ -224,6 +301,7 @@ function attachSubmenuHoverLogic(items) {
         });
 
         item.addEventListener('click', () => {
+            if (suppressNextTouchClick) return;
             if (currentView !== 'submenu') return;
             subIndex = index;
             renderSubmenuSelection(items);

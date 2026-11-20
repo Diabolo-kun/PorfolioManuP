@@ -71,20 +71,20 @@
 #main-menu-container.active { transform: translateX(0); opacity: 1; pointer-events: all; z-index: 2; }
 #main-menu-container.hidden-view { transform: translateX(-50px); opacity: 0; pointer-events: none; z-index: 0; }
 
-#main-menu-container { justify-content: center; align-items: flex-start; padding-left: 40%; }
+#main-menu-container { justify-content: center; align-items: flex-start; padding: 20px 40px 20px 38%; }
 
-.bauhaus-header { flex: 0 0 auto; margin-bottom: 20px; width: auto; perspective: 800px; }
+.bauhaus-header { flex: 0 0 auto; margin-bottom: 10px; width: auto; perspective: 800px; }
 .main-nav { 
     display: flex; 
     flex-direction: column; 
     align-items: flex-start; 
-    gap: 10px; 
+    gap: 6px; 
     transform-style: preserve-3d;
 }
 
 .nav-btn {
     position: relative; background: none; border: none; cursor: pointer;
-    text-align: left; padding: 14px 40px; min-width: 380px; outline: none;
+    text-align: left; padding: 10px 36px; min-width: 380px; outline: none;
     opacity: 0;
     transform-origin: left center;
     /* Efecto inicial de entrada desde la izquierda */
@@ -113,7 +113,7 @@
 
 .nav-btn .btn-text {
     position: relative;
-    font-family: var(--font-heading); font-size: 4rem; font-weight: 800;
+    font-family: var(--font-heading); font-size: 3.3rem; font-weight: 800;
     color: var(--color-black);
     text-transform: uppercase; z-index: 2;
     transition: var(--transition-fast);
@@ -137,7 +137,7 @@
 .nav-btn.active .btn-text { color: var(--color-dark); padding-left: 15px; } /* Desplazar texto al seleccionar */
 
 .menu-instructions {
-    margin-top: 40px; font-weight: 600; color: rgba(0,0,0,0.4); font-size: 0.85rem; text-align: left;
+    margin-top: 18px; font-weight: 600; color: rgba(0,0,0,0.4); font-size: 0.85rem; text-align: left;
     margin-left: 200px; /* Para alinear bajo los últimos ítems escalonados */
     transform-origin: left center;
     transform: rotateY(-22deg) rotateZ(-3deg);
