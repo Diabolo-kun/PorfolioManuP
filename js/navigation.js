@@ -34,6 +34,9 @@ function updateMainMenuVisuals() {
 
 let touchStartX = 0;
 let touchStartY = 0;
+let lastSwipeY = 0;
+let swipeAccumY = 0;
+let touchStartedInList = false;
 let touchMoved = false;
 let suppressNextTouchClick = false;
 let touchAutoScrollTimer = null;
@@ -141,6 +144,9 @@ document.addEventListener('touchstart', (e) => {
     const touch = e.touches[0];
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
+    lastSwipeY = touch.clientY;
+    swipeAccumY = 0;
+    touchStartedInList = Boolean(e.target && e.target.closest('.submenu-list-container'));
     touchMoved = false;
     suppressNextTouchClick = false;
 }, { passive: true });
@@ -156,11 +162,66 @@ document.addEventListener('touchmove', (e) => {
         touchMoved = true;
     }
 
+    if (currentView === 'submenu' && touchStartedInList) {
+        const items = getCurrentSubmenuItems();
+        if (items.length > VISIBLE_COUNT) {
+            const listContainer = document.querySelector('.submenu-list-container');
+            if (listContainer) {
+                const rect = listContainer.getBoundingClientRect();
+                const inLeftHalf = touch.clientX <= rect.right + 40;
+
+                // Si sale del borde superior/inferior manteniendo el dedo, activar auto-scroll
+                if (inLeftHalf && touch.clientY < rect.top) {
+                    setTouchAutoScroll(-1);
+                    return;
+                }
+                if (inLeftHalf && touch.clientY > rect.bottom) {
+                    setTouchAutoScroll(1);
+                    return;
+                }
+
+                // Dentro de la lista: desplazamiento clásico tipo swipe (arrastrar arriba/abajo y soltar)
+                setTouchAutoScroll(0);
+                const stepY = touch.clientY - lastSwipeY;
+                lastSwipeY = touch.clientY;
+                swipeAccumY += stepY;
+
+                const stepPx = Math.max(24, rect.height / VISIBLE_COUNT);
+                const maxTop = Math.max(0, items.length - VISIBLE_COUNT);
+                let changed = false;
+
+                while (swipeAccumY <= -stepPx) {
+                    swipeAccumY += stepPx;
+                    if (windowTop < maxTop) {
+                        windowTop++;
+                        if (subIndex < windowTop) subIndex = windowTop;
+                        changed = true;
+                    }
+                }
+                while (swipeAccumY >= stepPx) {
+                    swipeAccumY -= stepPx;
+                    if (windowTop > 0) {
+                        windowTop--;
+                        if (subIndex >= windowTop + VISIBLE_COUNT) subIndex = windowTop + VISIBLE_COUNT - 1;
+                        changed = true;
+                    }
+                }
+
+                if (changed) {
+                    applyWindowScroll();
+                    renderSubmenuSelection(items);
+                }
+                return;
+            }
+        }
+    }
+
     handleTouchHoverAtPoint(touch);
 }, { passive: true });
 
 document.addEventListener('touchend', () => {
     setTouchAutoScroll(0);
+    touchStartedInList = false;
     if (touchMoved) {
         suppressNextTouchClick = true;
         setTimeout(() => { suppressNextTouchClick = false; }, 300);
@@ -170,6 +231,7 @@ document.addEventListener('touchend', () => {
 
 document.addEventListener('touchcancel', () => {
     setTouchAutoScroll(0);
+    touchStartedInList = false;
     touchMoved = false;
 }, { passive: true });
 
