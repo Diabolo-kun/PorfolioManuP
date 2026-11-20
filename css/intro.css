@@ -7,8 +7,8 @@
    FASE 1: INTRO - Pantalla de inicio con nombre + foto
    ========================================================================== */
 .intro-screen {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
     background-color: var(--color-dark);
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
@@ -112,8 +112,8 @@
    TRANSICIÓN: Grid Overlay 3x3
    ========================================================================== */
 .grid-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
     z-index: 200;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -123,7 +123,7 @@
 
 .grid-cell {
     background-color: var(--color-turquoise);
-    transform: translateX(-100vw);
+    transform: translateX(-300%);
     opacity: 1;
 }
 
@@ -169,7 +169,7 @@
 .grid-overlay.phase-cover .grid-cell[data-row="2"][data-col="0"] { animation-delay: 280ms; }
 
 @keyframes cellSlideIn {
-    from { transform: translateX(-100vw); }
+    from { transform: translateX(-300%); }
     to   { transform: translateX(0); }
 }
 
@@ -185,23 +185,23 @@
     transform: translateX(0);
 }
 
-@media (max-width: 768px) {
-    .intro-content { flex-direction: column; gap: 30px; text-align: center; }
-    .name-line { font-size: 2.5rem; }
-    .intro-photo-wrapper { width: 140px; height: 180px; }
-    .start-button {
-        font-size: 1.2rem;
-        padding: 14px 40px;
+@media (orientation: portrait) and (hover: none) and (pointer: coarse) {
+    body:not(.game-started) .intro-content { flex-direction: column; gap: 28px; text-align: center; margin-bottom: 36px; }
+    body:not(.game-started) .name-line { font-size: 2.6rem; }
+    body:not(.game-started) .intro-photo-wrapper { width: 150px; height: 190px; }
+    body:not(.game-started) .start-button {
+        font-size: 1.25rem;
+        padding: 14px 42px;
         letter-spacing: 4px;
     }
 }
 
-@media (max-width: 400px) {
-    .name-line { font-size: 2rem; }
-    .intro-photo-wrapper { width: 120px; height: 150px; }
-    .start-button {
-        font-size: 1rem;
-        padding: 12px 30px;
+@media (orientation: portrait) and (hover: none) and (pointer: coarse) and (max-width: 380px) {
+    body:not(.game-started) .name-line { font-size: 2.1rem; }
+    body:not(.game-started) .intro-photo-wrapper { width: 125px; height: 160px; }
+    body:not(.game-started) .start-button {
+        font-size: 1.05rem;
+        padding: 12px 32px;
         letter-spacing: 3px;
     }
 }

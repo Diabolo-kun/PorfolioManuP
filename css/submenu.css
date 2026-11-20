@@ -19,9 +19,9 @@
 .back-button:hover { background: var(--color-coral); transform: translateX(-5px); }
 
 #submenu-container {
-    position: fixed;
+    position: absolute;
     top: 0; left: 0;
-    width: 100vw; height: 100vh;
+    width: 100%; height: 100%;
     display: flex;
     flex-direction: row; 
     z-index: 300;
@@ -87,7 +87,7 @@
     position: absolute;
     top: 0;
     right: calc(100% - 4px);
-    width: 100vw;
+    width: 100cqw;
     height: 100%;
     background-color: var(--color-coral);
     box-shadow: 0px 4px 0px var(--color-black);
@@ -199,139 +199,20 @@
     overflow: hidden;
 }
 
-@media (max-width: 768px) {
-    #submenu-container {
-        flex-direction: column;
-    }
-
-    .back-button {
-        width: auto;
-        min-width: unset;
-        font-size: 0.9rem;
-        padding: 8px 15px;
-        top: 10px;
-        left: 10px;
-    }
-
-    .submenu-left {
-        flex: 1;
-        padding: 60px 15px 15px 15px;
-    }
-
-    .submenu-header {
-        padding: 8px 20px;
-        margin-bottom: 20px;
-    }
-
-    #submenu-title-text {
-        font-size: 1.5rem;
-        letter-spacing: 1px;
-    }
-
-    .submenu-list-container {
-        height: auto;
-        max-height: 50vh;
-        overflow-y: auto;
-    }
-
-    .submenu-item {
-        height: 45px;
-        font-size: 1rem;
-        padding: 0 12px;
-        clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
-    }
-
-    .submenu-item.hovered,
-    .submenu-item.active {
-        clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
-    }
-
-    .item-description {
-        height: auto;
-        max-height: 60px;
-        margin-top: 10px;
-        padding: 10px 15px;
-    }
-
-    .item-description p {
-        font-size: 0.85rem;
-        -webkit-line-clamp: 2;
-    }
-
-    /* Ocultar silueta en móvil para dar espacio */
-    .submenu-right {
-        display: none;
-    }
-
-    /* Overlay de descripción: ocupa todo el ancho en móvil */
-    .desc-overlay {
-        width: 92vw;
-        right: 4vw;
-        clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
-        transform: translate(3vw, -100vh);
-    }
-
-    .desc-overlay.active {
-        transform: translate(0, 0);
-    }
-
-    .desc-inner {
-        clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
-    }
-
-    .shape-left {
-        width: 5%;
-    }
-
-    .shape-right {
-        width: 5%;
-    }
-
-    .desc-content-wrap {
-        padding: 50px 10px 40px 10px;
-    }
-
-    .desc-header-box {
-        width: 90%;
-        height: auto;
-        min-height: 60px;
-        padding: 10px 15px;
-        margin-bottom: 20px;
-    }
-
-    .desc-header-box h2 {
-        font-size: 1.3rem;
-    }
-
-    #desc-text-overlay {
-        font-size: 0.95rem;
-        line-height: 1.5;
-    }
-
-    /* Avatar container en móvil */
-    .avatar-container {
-        transform: scale(1);
-        width: 50vw;
-        height: 40vh;
-        right: 5%;
-        bottom: 0;
-    }
-}
-
 /* ==========================================================================
    VENTANA DE DESCRIPCION SUPERPUESTA (OVERLAY)
    ========================================================================== */
 .desc-overlay {
     position: absolute;
     top: 0;
-    right: 5vw; /* Hueco transparente a la derecha */
-    width: 45vw; /* Ocupa la parte derecha */
-    height: 100vh;
+    right: 5cqw; /* Hueco transparente a la derecha */
+    width: 45cqw; /* Ocupa la parte derecha */
+    height: 100cqh;
     background: var(--color-coral); /* Color del borde para el efecto clip-path */
     z-index: 500;
     clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%); /* Lados paralelos */
     /* Animación más rápida y en diagonal */
-    transform: translate(6.75vw, -100vh);
+    transform: translate(6.75cqw, -100cqh);
     transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
     pointer-events: none;
 }
@@ -355,7 +236,7 @@
 .shape-left {
     float: left;
     width: 15%; /* Mismo porcentaje que el clip-path */
-    height: 100vh;
+    height: 100cqh;
     shape-outside: polygon(0 0, 100% 0, 0 100%);
     shape-margin: 30px; /* Margen para que el texto no toque el borde */
 }
@@ -363,7 +244,7 @@
 .shape-right {
     float: right;
     width: 15%;
-    height: 100vh;
+    height: 100cqh;
     shape-outside: polygon(100% 0, 0 100%, 100% 100%);
     shape-margin: 30px;
 }
@@ -406,10 +287,10 @@
    ========================================================================== */
 .avatar-container {
     position: absolute;
-    bottom: 2vh; /* Bajado un poco */
+    bottom: 2cqh; /* Bajado un poco */
     right: 15%;   
-    width: 35vw; 
-    height: 80vh;
+    width: 35cqw; 
+    height: 80cqh;
     pointer-events: none;
     z-index: 100; 
     transform: scale(1.45); 
@@ -419,7 +300,7 @@
 .avatar-torso {
     position: absolute;
     z-index: 1;
-    height: 50vh; /* Ajustamos la altura del torso como base */
+    height: 50cqh; /* Ajustamos la altura del torso como base */
     bottom: 0;
     right: 10%;
 }
@@ -427,16 +308,16 @@
 .avatar-head {
     position: absolute;
     z-index: 2; 
-    height: 16vh; 
-    bottom: 44vh; /* Ajuste fino hacia abajo */
+    height: 16cqh; 
+    bottom: 44cqh; /* Ajuste fino hacia abajo */
     right: 7%; 
 }
 
 .avatar-arm {
     position: absolute;
     z-index: 3; 
-    height: 21vh; 
-    bottom: 30vh; /* Bajado para reconectarlo al hombro */
+    height: 21cqh; 
+    bottom: 30cqh; /* Bajado para reconectarlo al hombro */
     right: 9%;    /* Movido a la izquierda para compensar el cambio de pivote */
     /* Punto de pivote: movido más arriba y a la derecha (según la marca naranja) */
     transform-origin: 88% 12%; 

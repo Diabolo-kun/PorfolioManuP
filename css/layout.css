@@ -7,13 +7,13 @@
    FASE 2: MAIN LAYOUT
    ========================================================================== */
 #main-layout {
-    position: fixed;
+    position: absolute;
     top: 0; left: 0;
-    width: 100vw; height: 100vh;
+    width: 100%; height: 100%;
     background-color: transparent; 
     color: var(--color-black);
     overflow: hidden;
-    transform: translateX(-100vw);
+    transform: translateX(-100%);
     z-index: 250; 
     transition: background-color 0.6s ease;
 }
@@ -23,7 +23,7 @@
 }
 
 @keyframes layoutSlideIn {
-    from { transform: translateX(-100vw); }
+    from { transform: translateX(-100%); }
     to   { transform: translateX(0); }
 }
 
@@ -42,7 +42,7 @@
 
 .portrait-bg.slide-left-out,
 .particles-container.slide-left-out {
-    transform: translateX(-50vw);
+    transform: translateX(-50%);
     opacity: 0;
     transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease-out;
 }
@@ -305,122 +305,4 @@
 @keyframes spinParticle {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
-
-@media (max-width: 768px) {
-    /* --- RETRATO: más pequeño y centrado por detrás --- */
-    .portrait-bg {
-        padding-left: 0;
-        justify-content: center;
-    }
-    .portrait-img {
-        height: 65%;
-        opacity: 0.35; /* Más transparente para que el menú sea legible */
-    }
-
-    /* --- MENÚ: centrado y texto mucho más pequeño --- */
-    #main-menu-container {
-        padding-left: 5%;
-        padding-right: 5%;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .main-nav {
-        align-items: center;
-        gap: 6px;
-    }
-
-    .nav-btn {
-        min-width: unset;
-        width: 85vw;
-        max-width: 320px;
-        padding: 10px 20px;
-        /* Eliminar escalonamiento en móvil */
-        margin-left: 0 !important;
-        /* Reducir perspectiva 3D para legibilidad en móvil */
-        transform: rotateY(-8deg) rotateZ(-1deg) scale(0.9) translateX(-20px);
-    }
-
-    .nav-btn.menu-reveal {
-        animation: menuItemRevealMobile 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    @keyframes menuItemRevealMobile {
-        to {
-            opacity: 1;
-            transform: rotateY(-8deg) rotateZ(-1deg) scale(1) translateX(0);
-        }
-    }
-
-    .bauhaus-header {
-        perspective: 600px;
-    }
-
-    .nav-btn .btn-text {
-        font-size: 1.4rem;
-        letter-spacing: 0;
-        text-shadow: -1px 1px 0px rgba(45, 211, 187, 0.5);
-    }
-
-    .nav-btn .btn-bg {
-        transform: skewX(8deg);
-    }
-
-    /* --- INSTRUCCIONES --- */
-    .menu-instructions {
-        margin-left: 0;
-        text-align: center;
-        margin-top: 20px;
-        transform: none;
-        font-size: 0.7rem;
-    }
-
-    /* --- PARTÍCULAS: ocultar las que molestan en móvil --- */
-    .particle-arrow-group,
-    .particle-stripes,
-    .particle-square.sq-1,
-    .particle-square.sq-3,
-    .particle-cross.cross-left,
-    .particle-red-box {
-        display: none;
-    }
-
-    .particle-dots.dots-right,
-    .particle-dots.dots-left {
-        opacity: 0.08;
-    }
-
-    .particle-square.sq-2 {
-        width: 50px;
-        height: 50px;
-        border-width: 10px;
-    }
-
-    .particle-circle.circle-left {
-        width: 60px;
-        height: 60px;
-        border-width: 10px;
-    }
-
-    .particle-square.sq-4 {
-        width: 30px;
-        height: 30px;
-    }
-}
-
-/* Pantallas muy pequeñas (< 400px) */
-@media (max-width: 400px) {
-    .portrait-img {
-        height: 55%;
-    }
-
-    .nav-btn .btn-text {
-        font-size: 1.2rem;
-    }
-
-    .nav-btn {
-        padding: 8px 15px;
-        max-width: 280px;
-    }
 }
