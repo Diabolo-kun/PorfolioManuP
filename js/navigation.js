@@ -39,47 +39,6 @@ let swipeAccumY = 0;
 let touchStartedInList = false;
 let touchMoved = false;
 let suppressNextTouchClick = false;
-let touchAutoScrollTimer = null;
-let touchAutoScrollDir = 0;
-
-/**
- * @brief Detiene o inicia el auto-scroll en los bordes de la lista al arrastrar el dedo.
- * @param {number} dir -1 (subir), 1 (bajar), 0 (detener).
- */
-function setTouchAutoScroll(dir) {
-    if (touchAutoScrollDir === dir) return;
-    touchAutoScrollDir = dir;
-
-    if (touchAutoScrollTimer) {
-        clearInterval(touchAutoScrollTimer);
-        touchAutoScrollTimer = null;
-    }
-
-    if (dir === 0) return;
-
-    touchAutoScrollTimer = setInterval(() => {
-        if (currentView !== 'submenu') {
-            setTouchAutoScroll(0);
-            return;
-        }
-        const items = getCurrentSubmenuItems();
-        if (items.length <= VISIBLE_COUNT) {
-            setTouchAutoScroll(0);
-            return;
-        }
-
-        const nextIndex = subIndex + dir;
-        if (nextIndex < 0 || nextIndex >= items.length) {
-            setTouchAutoScroll(0);
-            return;
-        }
-
-        subIndex = nextIndex;
-        adjustWindow('keyboard');
-        applyWindowScroll();
-        renderSubmenuSelection(items);
-    }, 110);
-}
 
 /**
  * @brief Simula el comportamiento de hover del ratón bajo la posición del dedo.
@@ -87,9 +46,9 @@ function setTouchAutoScroll(dir) {
  */
 function handleTouchHoverAtPoint(touch) {
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!el) return;
 
     if (currentView === 'menu') {
-        if (!el) return;
         const btn = el.closest('.nav-btn');
         if (btn) {
             const idx = Array.from(navButtons).indexOf(btn);
@@ -102,37 +61,16 @@ function handleTouchHoverAtPoint(touch) {
     }
 
     if (currentView === 'submenu') {
-        if (el) {
-            const item = el.closest('.submenu-item');
-            if (item) {
-                const items = Array.from(getCurrentSubmenuItems());
-                const idx = items.indexOf(item);
-                if (idx !== -1 && idx !== subIndex) {
-                    subIndex = idx;
-                    adjustWindow('keyboard');
-                    applyWindowScroll();
-                    renderSubmenuSelection(items);
-                }
+        const item = el.closest('.submenu-item');
+        if (item) {
+            const items = Array.from(getCurrentSubmenuItems());
+            const idx = items.indexOf(item);
+            if (idx !== -1 && idx !== subIndex) {
+                subIndex = idx;
+                adjustWindow('mouse');
+                applyWindowScroll();
+                renderSubmenuSelection(items);
             }
-        }
-
-        // Auto-scroll si el dedo está en el primer/último ítem visible o fuera por arriba/abajo
-        const itemsForScroll = getCurrentSubmenuItems();
-        const listContainer = document.querySelector('.submenu-list-container');
-        if (listContainer && itemsForScroll.length > VISIBLE_COUNT) {
-            const rect = listContainer.getBoundingClientRect();
-            const edgeZone = rect.height * 0.18;
-            const inLeftHalf = touch.clientX <= rect.right + 40;
-
-            if (inLeftHalf && touch.clientY <= rect.top + edgeZone) {
-                setTouchAutoScroll(-1);
-            } else if (inLeftHalf && touch.clientY >= rect.bottom - edgeZone) {
-                setTouchAutoScroll(1);
-            } else {
-                setTouchAutoScroll(0);
-            }
-        } else {
-            setTouchAutoScroll(0);
         }
     }
 }
@@ -168,20 +106,6 @@ document.addEventListener('touchmove', (e) => {
             const listContainer = document.querySelector('.submenu-list-container');
             if (listContainer) {
                 const rect = listContainer.getBoundingClientRect();
-                const inLeftHalf = touch.clientX <= rect.right + 40;
-
-                // Si sale del borde superior/inferior manteniendo el dedo, activar auto-scroll
-                if (inLeftHalf && touch.clientY < rect.top) {
-                    setTouchAutoScroll(-1);
-                    return;
-                }
-                if (inLeftHalf && touch.clientY > rect.bottom) {
-                    setTouchAutoScroll(1);
-                    return;
-                }
-
-                // Dentro de la lista: desplazamiento clásico tipo swipe (arrastrar arriba/abajo y soltar)
-                setTouchAutoScroll(0);
                 const stepY = touch.clientY - lastSwipeY;
                 lastSwipeY = touch.clientY;
                 swipeAccumY += stepY;
@@ -220,7 +144,6 @@ document.addEventListener('touchmove', (e) => {
 }, { passive: true });
 
 document.addEventListener('touchend', () => {
-    setTouchAutoScroll(0);
     touchStartedInList = false;
     if (touchMoved) {
         suppressNextTouchClick = true;
@@ -230,7 +153,6 @@ document.addEventListener('touchend', () => {
 }, { passive: true });
 
 document.addEventListener('touchcancel', () => {
-    setTouchAutoScroll(0);
     touchStartedInList = false;
     touchMoved = false;
 }, { passive: true });
@@ -266,7 +188,7 @@ navButtons.forEach((btn, index) => {
                 else if (action === 'download') {
                     const a = document.createElement('a');
                     a.href = btn.getAttribute('data-file');
-                    a.download = 'Manuel_Perez_CV.pdf';
+                    a.download = 'CVManuelPerez.pdf';
                     a.click();
                 }
             } else {

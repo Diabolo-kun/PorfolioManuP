@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVManuelPerez</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 11mm 14mm;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            color: #1f2428;
+            background: #eef1f4;
+            line-height: 1.38;
+            font-size: 9.7pt;
+        }
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            max-height: 297mm;
+            margin: 16px auto;
+            padding: 11mm 14mm;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+        }
+        .print-bar {
+            width: 210mm;
+            margin: 14px auto 0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .print-btn {
+            background: #188a78;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .print-btn:hover {
+            background: #126d5f;
+        }
+        header {
+            border-bottom: 2.5px solid #188a78;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            font-size: 20pt;
+            font-weight: 800;
+            color: #11161a;
+            letter-spacing: 0.3px;
+        }
+        .subtitle {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #188a78;
+            margin-top: 2px;
+            margin-bottom: 6px;
+        }
+        .contact-line {
+            font-size: 8.8pt;
+            color: #3d464d;
+            margin-bottom: 3px;
+        }
+        .links-list {
+            list-style: none;
+            font-size: 8.7pt;
+            color: #2b3238;
+        }
+        .links-list li {
+            margin-top: 2px;
+        }
+        .links-list a {
+            color: #188a78;
+            text-decoration: none;
+        }
+        section {
+            margin-bottom: 9px;
+        }
+        h2 {
+            font-size: 10.5pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #11161a;
+            border-bottom: 1px solid #d5dce0;
+            padding-bottom: 2px;
+            margin-bottom: 5px;
+        }
+        .summary {
+            font-size: 9.4pt;
+            color: #2c3338;
+        }
+        .entry {
+            margin-bottom: 6px;
+        }
+        .entry:last-child {
+            margin-bottom: 0;
+        }
+        .entry-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .entry-title {
+            font-weight: 700;
+            font-size: 9.7pt;
+            color: #11161a;
+        }
+        .entry-place {
+            font-weight: 600;
+            color: #4a555e;
+        }
+        .entry-date {
+            font-size: 8.5pt;
+            color: #556069;
+            white-space: nowrap;
+        }
+        ul.bullets {
+            padding-left: 16px;
+            margin-top: 2px;
+        }
+        ul.bullets li {
+            margin-bottom: 1.5px;
+            font-size: 9.2pt;
+        }
+        .skills-grid p {
+            margin-bottom: 3px;
+            font-size: 9.2pt;
+        }
+        .skills-grid p:last-child {
+            margin-bottom: 0;
+        }
+        @media print {
+            body {
+                background: #ffffff;
+            }
+            .print-bar {
+                display: none;
+            }
+            .page {
+                width: auto;
+                min-height: auto;
+                max-height: none;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-bar">
+        <button class="print-btn" onclick="window.print()">Guardar como PDF (CVManuelPerez.pdf)</button>
+    </div>
+
+    <main class="page">
+        <header>
+            <h1>Manuel Pérez García</h1>
+            <div class="subtitle">Desarrollador de Software y Tecnologías Interactivas</div>
+            <div class="contact-line">46009 Valencia (Valencia) · (+34) 601 31 54 73 · manupergar02@gmail.com</div>
+            <ul class="links-list">
+                <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/manuel-perez-garcia-3911b6361">linkedin.com/in/manuel-perez-garcia-3911b6361</a></li>
+                <li><strong>GitHub:</strong> <a href="https://github.com/Diabolo-kun">github.com/Diabolo-kun</a></li>
+                <li><strong>Portfolio:</strong> <a href="https://diabolo-kun.github.io/PorfolioManuP/">diabolo-kun.github.io/PorfolioManuP</a></li>
+            </ul>
+        </header>
+
+        <section>
+            <h2>Perfil Profesional</h2>
+            <p class="summary">
+                Estudiante de último curso del Grado en Tecnologías Interactivas (UPV) y Técnico Superior en Desarrollo de Aplicaciones Multiplataforma (IES Serpis), con experiencia práctica en desarrollo BackEnd y FrontEnd. Perfil resolutivo, habituado al trabajo en equipo y disponible para prácticas, media jornada o jornada completa.
+            </p>
+        </section>
+
+        <section>
+            <h2>Formación</h2>
+            <div class="entry">
+                <div class="entry-head">
+                    <div><span class="entry-title">Grado en Tecnologías Interactivas</span> · <span class="entry-place">Universidad Politécnica de Valencia (UPV), Gandia</span></div>
+                    <div class="entry-date">Sep 2023 – Actualidad</div>
+                </div>
+                <ul class="bullets">
+                    <li>Último curso. Ganador de competición en la asignatura de Inteligencia Artificial al mejor agente de IA para el juego Catán.</li>
+                </ul>
+            </div>
+            <div class="entry">
+                <div class="entry-head">
+                    <div><span class="entry-title">CFGS en Desarrollo de Aplicaciones Multiplataforma (DAM)</span> · <span class="entry-place">IES Serpis, Valencia</span></div>
+                    <div class="entry-date">Sep 2020 – Jul 2023</div>
+                </div>
+                <ul class="bullets">
+                    <li>Delegado de clase durante los dos primeros cursos.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Experiencia</h2>
+            <div class="entry">
+                <div class="entry-head">
+                    <div><span class="entry-title">Vigilante y Atención al Público</span> · <span class="entry-place">Administración Pública (CRAM Les Palmeres), Alboraya</span></div>
+                    <div class="entry-date">Abr 2022 – Feb 2025</div>
+                </div>
+                <ul class="bullets">
+                    <li>Recepción, atención directa a visitantes y control de seguridad en las instalaciones, compaginado con estudios superiores.</li>
+                </ul>
+            </div>
+            <div class="entry">
+                <div class="entry-head">
+                    <div><span class="entry-title">Alumno en Prácticas (FrontEnd / WordPress)</span> · <span class="entry-place">IES Serpis, Valencia</span></div>
+                    <div class="entry-date">Mar 2023 – Jun 2023</div>
+                </div>
+                <ul class="bullets">
+                    <li>Creación, maquetación y corrección de apartados de la página web oficial del centro mediante WordPress.</li>
+                </ul>
+            </div>
+            <div class="entry">
+                <div class="entry-head">
+                    <div><span class="entry-title">Alumno en Prácticas (BackEnd)</span> · <span class="entry-place">Sopra Steria, Valencia</span></div>
+                    <div class="entry-date">Sep 2022 – Feb 2023</div>
+                </div>
+                <ul class="bullets">
+                    <li>Primer contacto con entorno corporativo; formación práctica en desarrollo BackEnd y estudio de arquitectura de software.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Proyectos</h2>
+            <ul class="bullets">
+                <li>Recopilación de proyectos de software, robótica, electrónica e IA disponibles en mi portfolio web interactivo: <a href="https://diabolo-kun.github.io/PorfolioManuP/" style="color:#188a78;text-decoration:none;">diabolo-kun.github.io/PorfolioManuP</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Habilidades Técnicas</h2>
+            <div class="skills-grid">
+                <p><strong>Lenguajes:</strong> Java, C++, C#, SQL (MySQL), HTML, JavaScript, Python (básico).</p>
+                <p><strong>Herramientas y Entornos:</strong> Git, GitHub, Visual Studio Code, Android Studio, Unity, WordPress, Arduino, MATLAB, 3ds Max, Cisco Packet Tracer, Fritzing, VirtualBox, Audacity, Antigravity.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Idiomas e Información Adicional</h2>
+            <div class="skills-grid">
+                <p><strong>Idiomas:</strong> Español (Nativo) · Valenciano (B2 oficial) · Inglés (Intermedio / A2 oficial) · Japonés (Básico).</p>
+                <p><strong>Otros datos:</strong> Permiso de conducir B · Disponibilidad para prácticas, media jornada o jornada completa.</p>
+                <p><strong>Intereses:</strong> Baloncesto, automoción, videojuegos, idiomas y viajes.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
