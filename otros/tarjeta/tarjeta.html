@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TarjetaManuelPerez</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: 85mm 55mm;
+            margin: 0;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #e5e8ec;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+        }
+        .print-bar {
+            width: 85mm;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .print-btn {
+            background: #2DD3BB;
+            color: #0A1128;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .card {
+            width: 85mm;
+            height: 55mm;
+            position: relative;
+            overflow: hidden;
+            background: #000000;
+            color: #F4F4F9;
+            padding: 4mm 4mm 4mm 5.5mm;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 2.2mm;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+        }
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2.4mm;
+            height: 100%;
+            background: #2DD3BB;
+        }
+        .accent-coral {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 12mm;
+            height: 1.8mm;
+            background: #FF5A5F;
+        }
+        .card-left {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 9.6pt;
+            line-height: 0.96;
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+        }
+        .card-name span {
+            display: block;
+        }
+        .card-name .highlight {
+            color: #2DD3BB;
+        }
+        .card-role {
+            margin-top: 1.5mm;
+            font-size: 6.2pt;
+            font-weight: 600;
+            color: #F9E79F;
+            line-height: 1.25;
+        }
+        .card-desc {
+            margin-top: 2mm;
+            font-size: 5.5pt;
+            color: #B8C0CC;
+            line-height: 1.3;
+        }
+        .card-contact {
+            margin-top: 2mm;
+            font-size: 5.3pt;
+            line-height: 1.38;
+            color: #E2E6EE;
+        }
+        .card-contact strong {
+            color: #2DD3BB;
+            font-weight: 700;
+        }
+        .card-right {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .qr-crop {
+            width: 40mm;
+            height: 34.5mm;
+            overflow: hidden;
+        }
+        .card-qr {
+            width: 40mm;
+            height: 40mm;
+            object-fit: cover;
+            object-position: top center;
+            display: block;
+        }
+        .qr-label {
+            margin-top: 1.5mm;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 8.5pt;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #2DD3BB;
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background: transparent;
+                padding: 0;
+                gap: 0;
+            }
+            .print-bar {
+                display: none;
+            }
+            .card {
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-bar">
+        <button class="print-btn" onclick="window.print()">Imprimir / Guardar PDF (85×55 mm)</button>
+    </div>
+
+    <section class="card">
+        <div class="accent-bar"></div>
+        <div class="accent-coral"></div>
+
+        <div class="card-left">
+            <div>
+                <h1 class="card-name">
+                    <span>Manuel</span>
+                    <span class="highlight">Pérez</span>
+                    <span>García</span>
+                </h1>
+                <p class="card-role">Desarrollador de Software y Tecnologías Interactivas</p>
+                <p class="card-desc">Proyectos de software, electrónica, robótica e IA y descarga directa de mi CV</p>
+            </div>
+
+            <div class="card-contact">
+                <div><strong>Tel:</strong> (+34) 601 31 54 73</div>
+                <div><strong>Email:</strong> manupergar02@gmail.com</div>
+                <div><strong>Ubicación:</strong> Valencia, España</div>
+            </div>
+        </div>
+
+        <div class="card-right">
+            <div class="qr-crop">
+                <img src="../../img/qrporfolio.png" alt="QR Portfolio" class="card-qr">
+            </div>
+            <div class="qr-label">Porfolio</div>
+        </div>
+    </section>
+</body>
+</html>
