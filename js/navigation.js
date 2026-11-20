@@ -60,7 +60,10 @@ function setTouchAutoScroll(dir) {
             return;
         }
         const items = getCurrentSubmenuItems();
-        if (items.length === 0) return;
+        if (items.length <= VISIBLE_COUNT) {
+            setTouchAutoScroll(0);
+            return;
+        }
 
         const nextIndex = subIndex + dir;
         if (nextIndex < 0 || nextIndex >= items.length) {
@@ -111,8 +114,9 @@ function handleTouchHoverAtPoint(touch) {
         }
 
         // Auto-scroll si el dedo está en el primer/último ítem visible o fuera por arriba/abajo
+        const itemsForScroll = getCurrentSubmenuItems();
         const listContainer = document.querySelector('.submenu-list-container');
-        if (listContainer) {
+        if (listContainer && itemsForScroll.length > VISIBLE_COUNT) {
             const rect = listContainer.getBoundingClientRect();
             const edgeZone = rect.height * 0.18;
             const inLeftHalf = touch.clientX <= rect.right + 40;
@@ -124,6 +128,8 @@ function handleTouchHoverAtPoint(touch) {
             } else {
                 setTouchAutoScroll(0);
             }
+        } else {
+            setTouchAutoScroll(0);
         }
     }
 }
@@ -341,7 +347,27 @@ function applyWindowScroll() {
     const targetId = navButtons[mainIndex].getAttribute('data-target');
     const activeListPane = document.querySelector(`#${targetId} .list-pane`);
     if (!activeListPane) return;
-    activeListPane.style.transform = `translateY(-${windowTop * ITEM_HEIGHT}px)`;
+
+    const listContainer = activeListPane.closest('.submenu-list-container');
+    const items = activeListPane.querySelectorAll('.submenu-item');
+    let offset = windowTop * ITEM_HEIGHT;
+
+    if (items.length <= VISIBLE_COUNT) {
+        offset = 0;
+    } else if (listContainer) {
+        const styles = window.getComputedStyle(listContainer);
+        const padY = parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom);
+        const availableHeight = listContainer.clientHeight - padY;
+        const maxOffset = Math.max(0, activeListPane.scrollHeight - availableHeight);
+
+        if (windowTop >= items.length - VISIBLE_COUNT) {
+            offset = maxOffset;
+        } else {
+            offset = Math.min(offset, maxOffset);
+        }
+    }
+
+    activeListPane.style.transform = `translateY(-${offset}px)`;
     activeListPane.style.transition = 'transform 0.15s ease-out';
     
     updateAvatarPointing(subIndex, windowTop);
@@ -515,7 +541,10 @@ document.addEventListener('wheel', (e) => {
         e.preventDefault();
 
         const items = getCurrentSubmenuItems();
-        if (items.length === 0) return;
+        if (items.length <= VISIBLE_COUNT) {
+            setTouchAutoScroll(0);
+            return;
+        }
 
         if (window.wheelThrottle) return;
         window.wheelThrottle = true;
