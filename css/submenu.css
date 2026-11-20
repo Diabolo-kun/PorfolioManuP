@@ -48,7 +48,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 40px;
+    padding: 20px 40px;
 }
 
 .submenu-right {
@@ -73,7 +73,7 @@
 .submenu-header {
     background-color: var(--color-coral);
     padding: 10px 40px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     box-shadow: 4px 4px 0px var(--color-black);
     width: 100%;
     max-width: 700px;

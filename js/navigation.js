@@ -72,7 +72,7 @@ function setTouchAutoScroll(dir) {
         adjustWindow('keyboard');
         applyWindowScroll();
         renderSubmenuSelection(items);
-    }, 140);
+    }, 110);
 }
 
 /**
@@ -110,16 +110,16 @@ function handleTouchHoverAtPoint(touch) {
             }
         }
 
-        // Auto-scroll si el dedo está en el borde superior/inferior de la lista
+        // Auto-scroll si el dedo está en el primer/último ítem visible o fuera por arriba/abajo
         const listContainer = document.querySelector('.submenu-list-container');
         if (listContainer) {
             const rect = listContainer.getBoundingClientRect();
-            const edgeZone = rect.height * 0.14;
-            const inListHorizontally = touch.clientX >= rect.left - 30 && touch.clientX <= rect.right + 30;
+            const edgeZone = rect.height * 0.18;
+            const inLeftHalf = touch.clientX <= rect.right + 40;
 
-            if (inListHorizontally && touch.clientY <= rect.top + edgeZone) {
+            if (inLeftHalf && touch.clientY <= rect.top + edgeZone) {
                 setTouchAutoScroll(-1);
-            } else if (inListHorizontally && touch.clientY >= rect.bottom - edgeZone) {
+            } else if (inLeftHalf && touch.clientY >= rect.bottom - edgeZone) {
                 setTouchAutoScroll(1);
             } else {
                 setTouchAutoScroll(0);

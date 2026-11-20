@@ -40,15 +40,21 @@ function updateViewportScale() {
     gameContainer.style.transform = `translate(-50%, -50%) scale(${scale})`;
 }
 
+function isTouchDevice() {
+    return TOUCH_DEVICE_MQ.matches || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+}
+
 /**
- * @brief En dispositivos táctiles solicita pantalla completa y orientación horizontal.
+ * @brief Solicita pantalla completa y, en dispositivos táctiles, orientación horizontal.
+ * @param {boolean} forceFullscreen Si es true, solicita fullscreen también en escritorio.
  */
-async function enterLandscapeFullscreen() {
-    if (!TOUCH_DEVICE_MQ.matches) return;
+async function enterLandscapeFullscreen(forceFullscreen = false) {
+    const touch = isTouchDevice();
+    if (!touch && !forceFullscreen) return;
 
     const root = document.documentElement;
     try {
-        if (!document.fullscreenElement) {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
             if (root.requestFullscreen) {
                 await root.requestFullscreen();
             } else if (root.webkitRequestFullscreen) {
@@ -59,12 +65,14 @@ async function enterLandscapeFullscreen() {
         // Algunos navegadores (p. ej. iOS Safari) no permiten Fullscreen API en documentos
     }
 
-    try {
-        if (screen.orientation && screen.orientation.lock) {
-            await screen.orientation.lock('landscape');
+    if (touch) {
+        try {
+            if (screen.orientation && screen.orientation.lock) {
+                await screen.orientation.lock('landscape');
+            }
+        } catch (err) {
+            // Si no se puede bloquear por software, #rotate-overlay pedirá girar el dispositivo
         }
-    } catch (err) {
-        // Si no se puede bloquear por software, #rotate-overlay pedirá girar el dispositivo
     }
 
     syncFullscreenPromptState();
@@ -82,32 +90,46 @@ function canUseFullscreen() {
 }
 
 /**
- * @brief Sincroniza la clase `needs-fullscreen` si el usuario salió de pantalla completa en móvil.
+ * @brief Sincroniza la clase `needs-fullscreen` cuando no está en pantalla completa.
  */
 function syncFullscreenPromptState() {
     const isFullscreen = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
-    const needsFullscreen =
-        document.body.classList.contains('game-started') &&
-        TOUCH_DEVICE_MQ.matches &&
-        canUseFullscreen() &&
-        !isFullscreen;
-
+    const needsFullscreen = canUseFullscreen() && !isFullscreen;
     document.body.classList.toggle('needs-fullscreen', needsFullscreen);
 }
 
 if (fullscreenRetryBtn) {
     fullscreenRetryBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        enterLandscapeFullscreen();
+        enterLandscapeFullscreen(true);
     });
 }
 
-// Si salió de pantalla completa (p. ej. al salir del navegador), re-enganchar en el primer toque
-document.addEventListener('touchend', () => {
-    if (document.body.classList.contains('needs-fullscreen') && !PORTRAIT_TOUCH_MQ.matches) {
+// Al girar el móvil a horizontal tras haber iniciado, intentar recuperar fullscreen
+PORTRAIT_TOUCH_MQ.addEventListener('change', (e) => {
+    if (!e.matches && document.body.classList.contains('game-started')) {
+        setTimeout(() => {
+            updateViewportScale();
+            enterLandscapeFullscreen();
+        }, 120);
+    }
+});
+
+// Si salió de pantalla completa (p. ej. al salir del navegador), re-enganchar al tocar
+function retryFullscreenOnInteraction() {
+    if (
+        document.body.classList.contains('game-started') &&
+        document.body.classList.contains('needs-fullscreen') &&
+        isTouchDevice() &&
+        !PORTRAIT_TOUCH_MQ.matches
+    ) {
         enterLandscapeFullscreen();
     }
-}, { passive: true });
+}
+
+document.addEventListener('touchend', retryFullscreenOnInteraction, { passive: true });
+document.addEventListener('click', retryFullscreenOnInteraction, true);
+syncFullscreenPromptState();
 
 window.addEventListener('resize', updateViewportScale);
 window.addEventListener('orientationchange', () => {
